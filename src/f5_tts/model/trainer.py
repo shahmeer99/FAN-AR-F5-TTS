@@ -202,6 +202,8 @@ class Trainer:
         return step
 
     def train(self, train_dataset: Dataset, num_workers=16, resumable_with_seed: int = None):
+
+        print("LENGTH OF DATA DATASET (0): ", len(train_dataset))
         if self.log_samples:
             from f5_tts.infer.utils_infer import cfg_strength, load_vocoder, nfe_step, sway_sampling_coef
 
@@ -243,6 +245,7 @@ class Trainer:
                 persistent_workers=True,
                 batch_sampler=batch_sampler,
             )
+            print("LENGTH OF DATA LOADER (1): ", len(train_dataloader))
         else:
             raise ValueError(f"batch_size_type must be either 'sample' or 'frame', but received {self.batch_size_type}")
 
@@ -262,9 +265,15 @@ class Trainer:
         train_dataloader, self.scheduler = self.accelerator.prepare(
             train_dataloader, self.scheduler
         )  # actual steps = 1 gpu steps / gpus
+        print("LENGTH OF DATA LOADER (2): ", len(train_dataloader))
         start_step = self.load_checkpoint()
         global_step = start_step
 
+        ### DEBUG
+        # for batch in train_dataloader:
+        #     for file_path in batch["audio_files"]:
+        #         print(file_path)
+        ### DEBUG
         if exists(resumable_with_seed):
             orig_epoch_step = len(train_dataloader)
             skipped_epoch = int(start_step // orig_epoch_step)

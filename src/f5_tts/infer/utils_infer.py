@@ -402,7 +402,6 @@ def infer_process(
 
 # infer batches
 
-
 def infer_batch_process(
     ref_audio,
     ref_text,

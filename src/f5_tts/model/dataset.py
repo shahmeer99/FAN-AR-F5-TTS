@@ -245,11 +245,14 @@ def load_dataset(
     print("Loading dataset ...")
 
     if dataset_type == "CustomDataset":
-        rel_data_path = str(files("f5_tts").joinpath(f"../../data/{dataset_name}_{tokenizer}"))
+        rel_data_path = f"/llms1/mshahmmer/FORKED-F5/F5-TTS/data/{dataset_name}"
+        # rel_data_path = str(files("f5_tts").joinpath(f"../../data/{dataset_name}"))
+        # rel_data_path = str(files("f5_tts").joinpath(f"../../data/{dataset_name}_{tokenizer}"))
         if audio_type == "raw":
             try:
                 train_dataset = load_from_disk(f"{rel_data_path}/raw")
             except:  # noqa: E722
+                print("HERE IS rel_data_path PATH", f"{rel_data_path}")
                 train_dataset = Dataset_.from_file(f"{rel_data_path}/raw.arrow")
             preprocessed_mel = False
         elif audio_type == "mel":
@@ -265,6 +268,8 @@ def load_dataset(
             mel_spec_module=mel_spec_module,
             **mel_spec_kwargs,
         )
+
+        print("LENGTH OF TRAIN DATASET", len(train_dataset), train_dataset.__len__())
 
     elif dataset_type == "CustomDatasetPath":
         try:
